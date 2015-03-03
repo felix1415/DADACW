@@ -1,0 +1,60 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package dadacw;
+
+import java.util.LinkedList;
+
+/**
+ *
+ * @author alexgray
+ */
+public class StockCounter
+{
+
+    private LinkedList<Integer> UID;
+
+    public StockCounter()
+    {
+        this.UID = new LinkedList<>();
+        this.UID.add(0);
+    }
+
+    public int getNextStockNumber()
+    {
+        UID.add(UID.getFirst() + 1);
+        return UID.getFirst();
+    }
+    
+    public void removeNumber(int number){
+        UID.removeFirstOccurrence(number);
+    }
+
+    public void checkStockNumber(int number)
+    {
+        if (number > UID.getFirst())
+        {
+            UID.add(number);
+            sort();
+            return;
+        } else
+        {
+            for (int num : UID)
+            {
+                if (num == number)
+                {
+                    System.out.println("ERROR: STOCK NUMBER ALREADY EXSISTS");
+                }
+            }
+        }
+
+    }
+
+    private void sort()
+    {
+        this.UID = Util.InsertionSort(UID);
+    }
+
+}

@@ -32,6 +32,15 @@ public class Set extends Item
     {
         this.items.add(item);
     }
+    
+    public void removeItem(int itemNumber){
+        for (int item : items)
+        {
+            if(item == itemNumber){
+                items.remove(item);
+            }
+        }
+    }
 
     @Override
     public String toString()

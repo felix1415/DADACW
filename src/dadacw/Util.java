@@ -5,11 +5,9 @@
  */
 package dadacw;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 
 /**
  *
@@ -48,60 +46,21 @@ public class Util
         return items;
     }
 
-    public static LinkedList<Item> radixSortItemNumber(LinkedList<Item> items)
+    public static LinkedList<Integer> InsertionSort(LinkedList<Integer> num)
     {
-        LinkedList<Item>[] counter = new LinkedList[]
+        int j;                     // the number of items sorted so far
+        int key;                // the item to be inserted
+        int i;
+
+        for (j = 1; j < num.size(); j++)    // Start with 1 (not 0)
         {
-            new LinkedList<>(),
-            new LinkedList<>(),
-            new LinkedList<>(),
-            new LinkedList<>(),
-            new LinkedList<>(),
-            new LinkedList<>(),
-            new LinkedList<>(),
-            new LinkedList<>(),
-            new LinkedList<>(),
-            new LinkedList<>()
-        };
-        int mod = 10;
-        int dev = 1;
-        for (int i = 0; i < 5; i++, dev *= 10, mod *= 10)
-        {
-            for (int j = 0; j < items.size(); j++)
+            key = num.get(j);
+            for (i = j - 1; (i >= 0) && (num.get(i) < key); i--)   // Smaller values are moving up
             {
-                int bucket = (items.get(j).getItemNumber() % mod) / dev;
-                counter[bucket].add(items.get(j));
+                num.set(i + 1, num.get(i));
             }
-            int pos = 0;
-            for (int j = 0; j < counter.length; j++)
-            {
-                Item value = null;
-                while ((value = counter[j].poll()) != null)
-                {
-                    items.set(pos++, value);
-                }
-            }
+            num.set(i + 1, key);
         }
-        return items;
-    }
-
-    public static <E extends Comparable<? super Item>> LinkedList<Item> heapsort(LinkedList<Item> items)
-    {
-
-        // Java's PriorityQueue class functions as a min heap
-        PriorityQueue<Item> heap = new PriorityQueue<>(items.size());
-
-        // Add each array element to the heap
-        for (Item item : items)
-        {
-            heap.add(item);
-        }
-
-        // Elements come off the heap in ascending order
-        for (int i = 0; i < items.size(); i++)
-        {
-            items.set(i, heap.remove());
-        }
-        return items;
+        return num;
     }
 }

@@ -14,8 +14,8 @@ public class Item
 {
     
     private final int itemNumber;
-    private final String itemDescription;
-    private final double price;
+    private String itemDescription;
+    private double price;
 
     public Item(int itemNumber, String itemDescription, double price)
     {
@@ -38,6 +38,10 @@ public class Item
     public int getItemNumber()
     {
         return itemNumber;
+    }
+    
+    public void setPrice(double newPrice){
+        this.price = newPrice;
     }
 
     @Override
