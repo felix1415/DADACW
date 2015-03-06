@@ -46,10 +46,28 @@ public class Util
         return items;
     }
 
-    public static LinkedList<Integer> InsertionSort(LinkedList<Integer> num)
+    public static LinkedList<Integer> integerInsertionSort(LinkedList<Integer> num)
     {
         int j;                     // the number of items sorted so far
         int key;                // the item to be inserted
+        int i;
+
+        for (j = 1; j < num.size(); j++)    // Start with 1 (not 0)
+        {
+            key = num.get(j);
+            for (i = j - 1; (i >= 0) && (num.get(i) < key); i--)   // Smaller values are moving up
+            {
+                num.set(i + 1, num.get(i));
+            }
+            num.set(i + 1, key);
+        }
+        return num;
+    }
+    
+    public static LinkedList<Double> doubleInsertionSort(LinkedList<Double> num)
+    {
+        int j;                     // the number of items sorted so far
+        double key;                // the item to be inserted
         int i;
 
         for (j = 1; j < num.size(); j++)    // Start with 1 (not 0)

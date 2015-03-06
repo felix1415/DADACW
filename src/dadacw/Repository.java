@@ -65,7 +65,21 @@ public class Repository
     }
     
     public void remove(Item item){
-        items.remove(item);
+        this.remove(item.getItemNumber());
+    }
+    
+    public void remove(int itemNumber){
+        for (Item item : items)
+        {
+            if(item.getItemNumber() == itemNumber){
+                items.remove(item);
+                if (items.contains(item))
+                {
+                    System.out.println("WHY NO WORK");
+                }
+                break;
+            }
+        }
     }
 
     public Object[] getItemsAsObjects() // used for GUIs

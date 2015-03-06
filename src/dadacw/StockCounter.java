@@ -24,7 +24,9 @@ public class StockCounter
 
     public int getNextStockNumber()
     {
-        UID.add(UID.getFirst() + 1);
+        int number = UID.getFirst() + 1; //UID first is always largest number
+        UID.add(number);
+        sort();
         return UID.getFirst();
     }
     
@@ -38,6 +40,7 @@ public class StockCounter
         {
             UID.add(number);
             sort();
+            System.out.println(UID.getFirst());
             return;
         } else
         {
@@ -54,7 +57,7 @@ public class StockCounter
 
     private void sort()
     {
-        this.UID = Util.InsertionSort(UID);
+        this.UID = Util.integerInsertionSort(UID); // use insertion sort for nearly sorted list
     }
 
 }

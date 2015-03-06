@@ -39,8 +39,17 @@ public class Manager
         {
             if (item.getItemNumber() == rmItem.getItemNumber())
             {
+                System.out.println(item.getItemNumber() + "|  " + rmItem.getItemNumber() + "|");
                 items.remove(rmItem);
-                stockCounter.removeNumber(rmItem.getItemNumber());
+                break;
+            }
+        }
+        
+        for (Item item : bristolStore.getItems())
+        {
+            if (item.getItemNumber() == rmItem.getItemNumber())
+            {
+                bristolStore.remove(rmItem);
                 break;
             }
         }
@@ -59,25 +68,71 @@ public class Manager
                         break;
                     } else
                     {
-                        LinkedList<Integer> setItems = set.getItems();
-                        double totalPrice = set.getPrice();
-
+                        double totalPrice = this.calculateNewSetPrice(set.getItems(), rmItem, set.getPrice());
+                        set.setPrice(totalPrice);
                         //setItems.remove(rmItem);
                         break;
                     }
                 }
             }
         }
-    }
-    
-    public void removeSet(Set set){
-        //remove a set etc
-        stockCounter.removeNumber(set.getItemNumber());
+        stockCounter.removeNumber(rmItem.getItemNumber());
     }
 
-    private Item findSimilarItem(Item item)
+    public void removeSet(Set rmSet)
     {
+        //remove a set etc
+        //Item newItem = findSimilarItem(new Item());
+        for (int itemNumber : rmSet.getItems()) // for all the items in the set to be removed
+        {
+            for (Set set : sets) // for all other sets
+            {
+                for (int itemNum : set.getItems()) // for all the items in those sets
+                {
+                    //if(itemNum == )
+                }
+            }
+            items.remove(itemNumber);
+            bristolStore.remove(itemNumber);
+            stockCounter.removeNumber(itemNumber);
+            System.out.println(itemNumber + "| was removed  ");
+        }
+        for (Set set : sets)
+        {
+            if(set.getItemNumber() == rmSet.getItemNumber()){
+                sets.remove(set);
+                System.out.println(set.getItemNumber() + "|  " + rmSet.getItemNumber() + "|");
+            }
+        }
+        stockCounter.removeNumber(rmSet.getItemNumber());
+    }
+
+    private Item findSimilarItem(Item rmItem)
+    {
+        for (Item item : items.getItems()) // for all items
+        {
+            if (item.getItemDescription().equals(rmItem.getItemDescription()))
+            {
+                System.out.println("Found new item");
+                return item;
+            }
+        }
         return null;
+    }
+
+    private int calculateNewSetPrice(LinkedList<Integer> itemNums, Item rmItem, double price)
+    {
+        int sAP = 0; //Singular Accumalative Price
+        LinkedList<Double> itemPrices = new LinkedList<>();
+        for (int itemNum : itemNums)
+        {
+            Item item = items.getItemByID(itemNum);
+            itemPrices.add(item.getPrice());
+            sAP += item.getPrice();
+        }
+        double difference = sAP - price;
+        //itemPrices = Util.doubleInsertionSort(itemPrices);
+        return 0;
     }
 
     public LinkedList<Set> getSets()
@@ -175,11 +230,13 @@ public class Manager
     {
         bristolStore.addItem(iS);
         items.addItem(iS);
+        this.stockCounter.checkStockNumber(Integer.valueOf(iS[0]));
     }
 
     public void addItem(String[] iS)
     {
         items.addItem(iS);
+        this.stockCounter.checkStockNumber(Integer.valueOf(iS[0]));
     }
 
 }

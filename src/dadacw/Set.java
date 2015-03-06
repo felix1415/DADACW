@@ -34,11 +34,8 @@ public class Set extends Item
     }
     
     public void removeItem(int itemNumber){
-        for (int item : items)
-        {
-            if(item == itemNumber){
-                items.remove(item);
-            }
+        if(items.contains(itemNumber)){
+            items.remove(new Integer(itemNumber));
         }
     }
 

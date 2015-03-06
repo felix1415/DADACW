@@ -76,6 +76,7 @@ public class GUI extends javax.swing.JFrame
         jTextField10 = new javax.swing.JTextField();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -211,6 +212,16 @@ public class GUI extends javax.swing.JFrame
             }
         });
 
+        jButton9.setText("Sell selected ");
+        jButton9.setEnabled(false);
+        jButton9.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                jButton9ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -265,7 +276,8 @@ public class GUI extends javax.swing.JFrame
                                 .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton6)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton9))
                             .addComponent(jScrollPane1))
                         .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -365,7 +377,8 @@ public class GUI extends javax.swing.JFrame
                     .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6))
+                    .addComponent(jButton6)
+                    .addComponent(jButton9))
                 .addGap(1, 1, 1)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(19, 19, 19))
@@ -442,6 +455,7 @@ public class GUI extends javax.swing.JFrame
             jButton6.setEnabled(true);
             jButton7.setEnabled(true);
             jButton8.setEnabled(true);
+            jButton9.setEnabled(true);
             //make buttons active
         }
 
@@ -503,10 +517,21 @@ public class GUI extends javax.swing.JFrame
         {
             int index = jList3.getSelectedIndex(); // save index
             manager.removeItem((Item) jList3.getSelectedValue()); // remove item
-            this.updateGUI();
             jList3.setSelectedIndex(index); // reset index selected
+            this.updateGUI();
         }
     }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton9ActionPerformed
+    {//GEN-HEADEREND:event_jButton9ActionPerformed
+        if (jList3.getSelectedValue() != null)
+        {
+            int index = jList3.getSelectedIndex(); // save index
+            manager.removeSet((Set) jList3.getSelectedValue()); // remove item
+            jList3.setSelectedIndex(index); // reset index selected
+            this.updateGUI();
+        }
+    }//GEN-LAST:event_jButton9ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -569,6 +594,7 @@ public class GUI extends javax.swing.JFrame
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
