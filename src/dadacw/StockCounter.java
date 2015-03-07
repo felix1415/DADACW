@@ -40,7 +40,6 @@ public class StockCounter
         {
             UID.add(number);
             sort();
-            System.out.println(UID.getFirst());
             return;
         } else
         {

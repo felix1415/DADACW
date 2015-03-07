@@ -44,7 +44,7 @@ public class Manager
                 break;
             }
         }
-        
+
         for (Item item : bristolStore.getItems())
         {
             if (item.getItemNumber() == rmItem.getItemNumber())
@@ -60,7 +60,7 @@ public class Manager
             {
                 if (item == rmItem.getItemNumber())
                 {
-                    Item newItem = this.findSimilarItem(rmItem);
+                    Item newItem = this.findSimilarItem(rmItem, set);
                     if (newItem != null)
                     {
                         set.removeItem(item); // remove old item
@@ -70,7 +70,7 @@ public class Manager
                     {
                         double totalPrice = this.calculateNewSetPrice(set.getItems(), rmItem, set.getPrice());
                         set.setPrice(totalPrice);
-                        //setItems.remove(rmItem);
+                        set.removeItem(rmItem.getItemNumber());
                         break;
                     }
                 }
@@ -83,41 +83,108 @@ public class Manager
     {
         //remove a set etc
         //Item newItem = findSimilarItem(new Item());
-        for (int itemNumber : rmSet.getItems()) // for all the items in the set to be removed
+        ArrayList<Integer> remove;
+        ArrayList<Integer> add;
+        for (int rmItemNumber : rmSet.getItems()) // for all the items in the set to be removed
         {
             for (Set set : sets) // for all other sets
             {
+                remove = new ArrayList<>();
+                add  = new ArrayList<>();
                 for (int itemNum : set.getItems()) // for all the items in those sets
                 {
-                    //if(itemNum == )
+                    if (itemNum == rmItemNumber)
+                    {
+                        remove.add(itemNum);
+                        itemNum = findSimilarItem(
+                                    items.getItemByID(rmItemNumber),
+                                    set).getItemNumber();
+                        add.add(itemNum);
+                    }
+                }
+                for (int rm : remove)
+                {
+                    set.removeItem(rm);
+                }
+                for (int ad : add)
+                {
+                    set.addItem(ad);
                 }
             }
-            items.remove(itemNumber);
-            bristolStore.remove(itemNumber);
-            stockCounter.removeNumber(itemNumber);
-            System.out.println(itemNumber + "| was removed  ");
+            items.remove(rmItemNumber);
+            bristolStore.remove(rmItemNumber);
+            stockCounter.removeNumber(rmItemNumber);
+            System.out.println(rmItemNumber + "| was removed  ");
         }
-        for (Set set : sets)
-        {
-            if(set.getItemNumber() == rmSet.getItemNumber()){
-                sets.remove(set);
-                System.out.println(set.getItemNumber() + "|  " + rmSet.getItemNumber() + "|");
-            }
-        }
+        sets.remove(rmSet);
         stockCounter.removeNumber(rmSet.getItemNumber());
     }
 
-    private Item findSimilarItem(Item rmItem)
+    private Item findSimilarItem(Item rmItem, Set set)
     {
+        //System.out.println(rmItem.toString());
         for (Item item : items.getItems()) // for all items
         {
+            //if the same description
             if (item.getItemDescription().equals(rmItem.getItemDescription()))
             {
-                System.out.println("Found new item");
-                return item;
+                // and not the same item
+                if (item.getItemNumber() != rmItem.getItemNumber())
+                {
+                    //and not already in the set
+                    if (!containedInSet(item.getItemNumber(), set))
+                    {
+                        return item;
+                    }
+                }
             }
         }
-        return null;
+        //split rmItem up into string array
+        String[] rmItemString = rmItem.getItemDescription().split(" ");
+        int contentMatches = 0;
+        int lengthMatches = 0;
+        int highestMatches = 0;
+        Item matchItem = null;
+        for (Item item : items.getItems()) // for all item
+        {
+            //if not same item
+            if (!containedInSet(item.getItemNumber(), set))
+            {
+                String[] itemString = item.getItemDescription().split(" ");
+                lengthMatches = Math.abs(itemString.length - rmItemString.length);
+                for (String rmString : rmItemString) // for each word in the item
+                {
+                    for (String string : itemString) //for each word in the candidate
+                    {
+                        if (rmString.equals(string)) // see if string matches
+                        {
+                            contentMatches++;
+                        }
+                    }
+                }
+            }
+            if (contentMatches > highestMatches && lengthMatches < 2)
+            { // if better than previous
+                System.out.println(item.getItemDescription() + "  " + contentMatches + "  " + lengthMatches);
+                matchItem = item; //change 
+                highestMatches = contentMatches;
+            }
+            contentMatches = 0;
+            lengthMatches = 0;
+        }
+        return matchItem;
+    }
+
+    private boolean containedInSet(int itemNumber, Set set)
+    {
+        for (int item : set.getItems())
+        {
+            if (item == itemNumber)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int calculateNewSetPrice(LinkedList<Integer> itemNums, Item rmItem, double price)
@@ -237,6 +304,10 @@ public class Manager
     {
         items.addItem(iS);
         this.stockCounter.checkStockNumber(Integer.valueOf(iS[0]));
+    }
+    
+    public Item getItemByID(int id){
+        return this.items.getItemByID(id);
     }
 
 }
