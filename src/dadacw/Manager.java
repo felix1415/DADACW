@@ -17,8 +17,8 @@ public class Manager
 
     private final Repository bristolStore;
     private final Repository items;
-    private final LinkedList<Set> sets;
     private final StockCounter stockCounter;
+    private LinkedList<Set> sets;
 
     public Manager()
     {
@@ -81,36 +81,44 @@ public class Manager
 
     public void removeSet(Set rmSet)
     {
+
         //remove a set etc
         //Item newItem = findSimilarItem(new Item());
         ArrayList<Integer> remove;
         ArrayList<Integer> add;
         for (int rmItemNumber : rmSet.getItems()) // for all the items in the set to be removed
         {
-            for (Set set : sets) // for all other sets
+            LinkedList<Set> setsCopy = new LinkedList<>();
+            System.out.println(sets.size());
+
+            for (int i = 0; i < sets.size(); i++) // for all other sets
             {
-                remove = new ArrayList<>();
-                add  = new ArrayList<>();
-                for (int itemNum : set.getItems()) // for all the items in those sets
+                if (sets.get(i).equals(rmSet))
+                {
+                    System.out.println("same set");
+                    continue;
+                }
+                remove = new ArrayList<>(); // remove item from set
+                add = new ArrayList<>(); // add item to set
+                for (int itemNum : sets.get(i).getItems()) // for all the items in those sets
                 {
                     if (itemNum == rmItemNumber)
                     {
                         remove.add(itemNum);
                         itemNum = findSimilarItem(
-                                    items.getItemByID(rmItemNumber),
-                                    set).getItemNumber();
+                                items.getItemByID(rmItemNumber),
+                                sets.get(i)).getItemNumber();
                         add.add(itemNum);
                     }
                 }
                 for (int rm : remove)
-                {
-                    set.removeItem(rm);
-                }
+                    sets.get(i).removeItem(rm);
                 for (int ad : add)
-                {
-                    set.addItem(ad);
-                }
+                    sets.get(i).addItem(ad);
+                setsCopy.add(sets.get(i));
             }
+
+            sets = setsCopy;
             items.remove(rmItemNumber);
             bristolStore.remove(rmItemNumber);
             stockCounter.removeNumber(rmItemNumber);
@@ -118,6 +126,22 @@ public class Manager
         }
         sets.remove(rmSet);
         stockCounter.removeNumber(rmSet.getItemNumber());
+//        //for all items in rmSet
+//        for (int rmItem : rmSet.getItems())
+//        {
+//            //for all sets  : set
+//            for (Set set : sets)
+//            {
+//                if(set != rmSet){
+//                    
+//                }
+//            }
+//                //where set != rmSet
+//                    //for all items in this set
+//                        //if rmSet item is the same as set item num then
+//                            //Item newItem = findSimilar
+//        }
+
     }
 
     private Item findSimilarItem(Item rmItem, Set set)
@@ -305,8 +329,9 @@ public class Manager
         items.addItem(iS);
         this.stockCounter.checkStockNumber(Integer.valueOf(iS[0]));
     }
-    
-    public Item getItemByID(int id){
+
+    public Item getItemByID(int id)
+    {
         return this.items.getItemByID(id);
     }
 
