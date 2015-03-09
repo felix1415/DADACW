@@ -16,11 +16,30 @@ public class Set extends Item
 {
     
     private final LinkedList<Integer> items;
+    private double valueFraction;
 
     public Set(int itemNumber, String itemDescription, double price)
     {
         super(itemNumber, itemDescription, price);
         this.items = new LinkedList<>();
+        this.valueFraction = 0;
+    }
+    
+    public void updateValueFraction(LinkedList<Item> itemList){
+        double price = 0;
+        for (Item item : itemList)
+        {
+           price += item.getPrice();
+        }
+        if(price == 0 || this.getPrice() == 0){
+            valueFraction = 1;
+            return;
+        }
+        valueFraction = this.getPrice()/price;
+    }
+    
+    public double getValueFraction(){
+        return valueFraction;
     }
 
     public LinkedList<Integer> getItems()
@@ -33,9 +52,11 @@ public class Set extends Item
         this.items.add(item);
     }
     
-    public void removeItem(int itemNumber){
-        if(items.contains(itemNumber)){
-            items.remove(new Integer(itemNumber));
+    public void removeItem(Item item){
+        if(items.contains(item.getItemNumber())){
+            this.setPrice(this.getPrice() - 
+                    (item.getPrice()*this.valueFraction));
+            items.remove(new Integer(item.getItemNumber()));
         }
     }
 
@@ -43,7 +64,7 @@ public class Set extends Item
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(super.toString());
+        sb.append(super.toString() + "   vF:" +this.valueFraction);
         for (int item : items)
         {
             sb.append("\n   ").append(item);

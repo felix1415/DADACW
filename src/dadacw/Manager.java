@@ -35,6 +35,24 @@ public class Manager
 
     public void removeItem(Item rmItem)
     {
+        for (Set set : sets)
+        { // remove item if in a set
+            for (int item : set.getItems())
+            {
+                if (item == rmItem.getItemNumber())
+                {
+                    Item newItem = this.findSimilarItem(rmItem, set);
+                    if (newItem != null)
+                    {
+                        set.removeItem(this.getItemByID(item)); // remove old item
+                        set.addItem(newItem.getItemNumber()); // add new item
+                    } else
+                    {
+                        set.removeItem(rmItem);
+                    }
+                }
+            }
+        }
         for (Item item : items.getItems())
         {
             if (item.getItemNumber() == rmItem.getItemNumber())
@@ -54,28 +72,7 @@ public class Manager
             }
         }
 
-        for (Set set : sets)
-        { // remove item if in a set
-            for (int item : set.getItems())
-            {
-                if (item == rmItem.getItemNumber())
-                {
-                    Item newItem = this.findSimilarItem(rmItem, set);
-                    if (newItem != null)
-                    {
-                        set.removeItem(item); // remove old item
-                        set.addItem(newItem.getItemNumber()); // add new item
-                        break;
-                    } else
-                    {
-                        double totalPrice = this.calculateNewSetPrice(set.getItems(), rmItem, set.getPrice());
-                        set.setPrice(totalPrice);
-                        set.removeItem(rmItem.getItemNumber());
-                        break;
-                    }
-                }
-            }
-        }
+        
         stockCounter.removeNumber(rmItem.getItemNumber());
     }
 
@@ -112,7 +109,7 @@ public class Manager
                     }
                 }
                 for (int rm : remove)
-                    sets.get(i).removeItem(rm);
+                    sets.get(i).removeItem(this.getItemByID(rm));
                 for (int ad : add)
                     sets.get(i).addItem(ad);
                 setsCopy.add(sets.get(i));
@@ -211,21 +208,6 @@ public class Manager
         return false;
     }
 
-    private int calculateNewSetPrice(LinkedList<Integer> itemNums, Item rmItem, double price)
-    {
-        int sAP = 0; //Singular Accumalative Price
-        LinkedList<Double> itemPrices = new LinkedList<>();
-        for (int itemNum : itemNums)
-        {
-            Item item = items.getItemByID(itemNum);
-            itemPrices.add(item.getPrice());
-            sAP += item.getPrice();
-        }
-        double difference = sAP - price;
-        //itemPrices = Util.doubleInsertionSort(itemPrices);
-        return 0;
-    }
-
     public LinkedList<Set> getSets()
     {
         return sets;
@@ -242,6 +224,12 @@ public class Manager
             {
                 set.addItem(Integer.valueOf(iS[i])); // add item nubmers to set
             }
+            LinkedList<Item> setItems = new LinkedList<>();
+            for (int item : set.getItems())
+            {
+                setItems.add(this.getItemByID(item));
+            }
+            set.updateValueFraction(setItems);
             sets.add(set);
         }
     }
@@ -333,6 +321,14 @@ public class Manager
     public Item getItemByID(int id)
     {
         return this.items.getItemByID(id);
+    }
+
+    void print()
+    {
+        for (Set set : sets)
+        {
+            System.out.println(set.toString());
+        }
     }
 
 }
