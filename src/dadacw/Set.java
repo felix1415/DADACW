@@ -38,6 +38,10 @@ public class Set extends Item
         valueFraction = this.getPrice()/price;
     }
     
+    public void updateValue(LinkedList<Item> itemList){
+        
+    }
+    
     public double getValueFraction(){
         return valueFraction;
     }

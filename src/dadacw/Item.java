@@ -41,7 +41,7 @@ public class Item
     }
     
     public void setPrice(double newPrice){
-        this.price = newPrice;
+        this.price = Util.round(newPrice, 2);
     }
 
     @Override

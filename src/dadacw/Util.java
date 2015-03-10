@@ -16,6 +16,15 @@ import java.util.LinkedList;
 public class Util
 {
 
+    public static double round(double value, int places)
+    {
+        places = Math.abs(places);
+        double factor = (long) Math.pow(10, places);
+        value = value * factor;
+        double tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
+
     public static LinkedList<Item> sortByItemNumber(LinkedList<Item> items)
     {
         Collections.sort(items, new Comparator<Item>()
@@ -63,7 +72,7 @@ public class Util
         }
         return num;
     }
-    
+
     public static LinkedList<Double> doubleInsertionSort(LinkedList<Double> num)
     {
         int j;                     // the number of items sorted so far

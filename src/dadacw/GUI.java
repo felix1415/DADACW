@@ -93,7 +93,7 @@ public class GUI extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("Add Data");
+        jButton1.setText("Load Data");
         jButton1.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -515,9 +515,9 @@ public class GUI extends javax.swing.JFrame
         {
             line = sc.nextLine();
             itemString = line.split(",");
-            manager.addItem(itemString);            
+            manager.addItem(itemString);
         }
-        
+
         sc = new Scanner(getClass().getResourceAsStream("../res/bristolstoreitems.csv"));
         if (sc.hasNextLine())
         {
@@ -528,9 +528,9 @@ public class GUI extends javax.swing.JFrame
         {
             line = sc.nextLine();
             itemString = line.split(",");
-            manager.addItemBS(itemString);            
+            manager.addItemBS(itemString);
         }
-        
+
         //get sets data in
         sc = new Scanner(getClass().getResourceAsStream("../res/sets.csv"));
         if (sc.hasNextLine())
@@ -544,7 +544,7 @@ public class GUI extends javax.swing.JFrame
             itemString = line.split(",");
             manager.addSet(itemString);
         }
-        
+
         this.updateGUI();
         //show and hide buttons
         if (manager.getItems().size() > 0)
@@ -581,6 +581,7 @@ public class GUI extends javax.swing.JFrame
         jTextField1.setText("");
         jTextField2.setText("");
         this.updateGUI();
+        jTextArea1.setText("Added new item: '" + desc + "\n" + jTextArea1.getText());
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
@@ -599,8 +600,8 @@ public class GUI extends javax.swing.JFrame
             manager.removeItem(item); // remove item
             this.updateGUI();
             jList1.setSelectedIndex(index); // reset index selected
-            jTextArea1.setText("Item: '"+ item.getItemDescription() + 
-                    "' removed from All Items\n" + jTextArea1.getText());
+            jTextArea1.setText("Item: '" + item.getItemDescription()
+                    + "' removed from All Items\n" + jTextArea1.getText());
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -618,6 +619,7 @@ public class GUI extends javax.swing.JFrame
         jTextField9.setText("");
         jTextField10.setText("");
         this.updateGUI();
+        jTextArea1.setText("Added new item: '" + desc + "\n" + jTextArea1.getText());
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton8ActionPerformed
@@ -629,21 +631,22 @@ public class GUI extends javax.swing.JFrame
             manager.removeItem((Item) jList3.getSelectedValue()); // remove item
             jList3.setSelectedIndex(index); // reset index selected
             this.updateGUI();
-            jTextArea1.setText("Item: '"+ item.getItemDescription() + 
-                    "' removed from all Bristol Store AND All Items\n" + jTextArea1.getText());
+            jTextArea1.setText("Item: '" + item.getItemDescription()
+                    + "' removed from all Bristol Store AND All Items\n" + jTextArea1.getText());
         }
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton9ActionPerformed
     {//GEN-HEADEREND:event_jButton9ActionPerformed
-        if (jList2.getSelectedValue() != null)
+        Set set = (Set) jList2.getSelectedValue();
+        if (set != null)
         {
             int index = jList2.getSelectedIndex(); // save index
-            System.out.println("this far?");
             manager.removeSet((Set) jList2.getSelectedValue()); // remove item
-            System.out.println("done?");
             jList2.setSelectedIndex(index); // reset index selected
             this.updateGUI();
+            jTextArea1.setText("Set: '" + set.getItemDescription()
+                    + "' removed from sets, items removed from all repos\n" + jTextArea1.getText());
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
@@ -651,18 +654,20 @@ public class GUI extends javax.swing.JFrame
     {//GEN-HEADEREND:event_jList2ValueChanged
         LinkedList<Item> items = new LinkedList<>();
         Set set = ((Set) jList2.getSelectedValue());
-        if(set != null){
-        for (int item : set.getItems())
+        if (set != null)
         {
-            items.add(this.manager.getItemByID(item));
+            for (int item : set.getItems())
+            {
+                items.add(this.manager.getItemByID(item));
+            }
+
+            Object[] obj = new Object[items.size()];
+            for (int i = 0; i < items.size(); i++)
+            {
+                obj[i] = items.get(i);
+            }
+            this.jList4.setListData(obj);
         }
-        
-        Object[] obj = new Object[items.size()];
-        for (int i = 0; i < items.size(); i++)
-        {
-            obj[i] = items.get(i);
-        }
-        this.jList4.setListData(obj);}
     }//GEN-LAST:event_jList2ValueChanged
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton13ActionPerformed
@@ -672,17 +677,23 @@ public class GUI extends javax.swing.JFrame
         for (Item item : manager.getItems())
         {
             //if search text is in item desc
-            if(item.getItemDescription().contains(text)){
+            if (item.getItemDescription().contains(text))
+            {
                 //add to list and continue to next item
                 list.add(item);
                 continue;
             }
-            try{
-            //if search text is item number then
-            if(item.getItemNumber() == Integer.valueOf(text)){
-                //add to list
-                list.add(item);
-            }} catch(NumberFormatException e){}
+            try
+            {
+                //if search text is item number then
+                if (item.getItemNumber() == Integer.valueOf(text))
+                {
+                    //add to list
+                    list.add(item);
+                }
+            } catch (NumberFormatException e)
+            {
+            }
         }
         Object[] obj = list.toArray();
         jList5.setListData(obj);
@@ -690,7 +701,27 @@ public class GUI extends javax.swing.JFrame
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton12ActionPerformed
     {//GEN-HEADEREND:event_jButton12ActionPerformed
-        this.manager.print();
+        int item = 0;
+        int set = 0;
+        try
+        {
+            item = Integer.valueOf(jTextField11.getText());
+            Set set2 = (Set) jList2.getSelectedValue();
+            set = set2.getItemNumber();
+            if (manager.addItemToSet(set, item))
+            {
+                jTextArea1.setText("Item: " + item + " added to Set: " + set + "\n" + jTextArea1.getText());
+                this.updateGUI();
+            } else {
+                jTextArea1.setText("ERROR: invalid item or set in adding item to set.\n" + jTextArea1.getText());
+            }
+            
+        } catch (Exception e)
+        {
+            jTextArea1.setText("ERROR: invalid item or set in adding item to set.\n" + jTextArea1.getText());
+        }
+
+
     }//GEN-LAST:event_jButton12ActionPerformed
 
     /**
@@ -736,8 +767,9 @@ public class GUI extends javax.swing.JFrame
             }
         });
     }
-    
-    private void updateGUI(){
+
+    private void updateGUI()
+    {
         jList1.setListData(manager.getItemsAsObjects());
         jList2.setListData(manager.getSetsAsObjects());
         jList3.setListData(manager.getItemsAsObjectsBS());

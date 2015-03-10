@@ -33,26 +33,78 @@ public class Manager
         return sets.size();
     }
 
+    public boolean addItemToSet(int setID, int itemID)
+    {
+        Set set = this.getSetByID(setID);
+        Item item = this.getItemByID(itemID);
+        //if both are valid item and set then
+        if (set != null && item != null)
+        {
+            //if not already in the set then
+            if (!set.getItems().contains(itemID))
+            {
+                //add item to set
+                set.addItem(itemID);
+                //update set price
+                double price = 0;
+                for (int itemNum : set.getItems())
+                {
+                    Item itemP = this.getItemByID(itemNum);
+                    price += itemP.getPrice() * set.getValueFraction();
+                }
+                set.setPrice(price);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void removeItem(Item rmItem)
     {
+        LinkedList<Set> setsCopy = new LinkedList<>(sets);
         for (Set set : sets)
-        { // remove item if in a set
-            for (int item : set.getItems())
+        { 
+            Set tempSet = set;
+            LinkedList<Integer> setItems = new LinkedList<>(set.getItems());
+            for (int item : setItems)
             {
                 if (item == rmItem.getItemNumber())
                 {
                     Item newItem = this.findSimilarItem(rmItem, set);
                     if (newItem != null)
                     {
-                        set.removeItem(this.getItemByID(item)); // remove old item
-                        set.addItem(newItem.getItemNumber()); // add new item
+                        tempSet.removeItem(this.getItemByID(item)); // remove old item
+                        tempSet.addItem(newItem.getItemNumber()); // add new item
+                        double price = 0;
+                        LinkedList<Integer> tempSetItems = new LinkedList<>(tempSet.getItems());
+                        for (int itemNum : tempSetItems)
+                        {
+                            Item itemP = this.getItemByID(itemNum);
+                            price += itemP.getPrice() * tempSet.getValueFraction();
+                        }
+                        tempSet.setPrice(price);
+                        break;
                     } else
                     {
-                        set.removeItem(rmItem);
+                        tempSet.removeItem(rmItem);
+                        double price = 0;
+                        LinkedList<Integer> tempSetItems = new LinkedList<>(tempSet.getItems());
+                        for (int itemNum : tempSetItems)
+                        {
+                            Item itemP = this.getItemByID(itemNum);
+                            price += itemP.getPrice() * tempSet.getValueFraction();
+                        }
+                        tempSet.setPrice(price);
+                        break;
                     }
                 }
             }
+            if (tempSet.getItems().size() == 0)
+            {
+                setsCopy.remove(set);
+            }
         }
+        sets = setsCopy;
         for (Item item : items.getItems())
         {
             if (item.getItemNumber() == rmItem.getItemNumber())
@@ -72,7 +124,6 @@ public class Manager
             }
         }
 
-        
         stockCounter.removeNumber(rmItem.getItemNumber());
     }
 
@@ -109,9 +160,13 @@ public class Manager
                     }
                 }
                 for (int rm : remove)
+                {
                     sets.get(i).removeItem(this.getItemByID(rm));
+                }
                 for (int ad : add)
+                {
                     sets.get(i).addItem(ad);
+                }
                 setsCopy.add(sets.get(i));
             }
 
@@ -165,6 +220,7 @@ public class Manager
         int contentMatches = 0;
         int lengthMatches = 0;
         int highestMatches = 0;
+        int setDescMatches = 0;
         Item matchItem = null;
         for (Item item : items.getItems()) // for all item
         {
@@ -173,6 +229,7 @@ public class Manager
             {
                 String[] itemString = item.getItemDescription().split(" ");
                 lengthMatches = Math.abs(itemString.length - rmItemString.length);
+                String[] setString = set.getItemDescription().split(" ");
                 for (String rmString : rmItemString) // for each word in the item
                 {
                     for (String string : itemString) //for each word in the candidate
@@ -181,17 +238,26 @@ public class Manager
                         {
                             contentMatches++;
                         }
+                        for (String setStringSplit : setString)
+                        {
+                            if (string.equals(setStringSplit))
+                            {
+                                setDescMatches++;
+                            }
+                        }
+
                     }
                 }
             }
-            if (contentMatches > highestMatches && lengthMatches < 2)
+            if (contentMatches > highestMatches && lengthMatches < 2 && setDescMatches >= 6)
             { // if better than previous
-                System.out.println(item.getItemDescription() + "  " + contentMatches + "  " + lengthMatches);
+                System.out.println(item.getItemDescription() + "  conMat:" + contentMatches + "  lenMat:" + lengthMatches + " sDM:" + setDescMatches);
                 matchItem = item; //change 
                 highestMatches = contentMatches;
             }
             contentMatches = 0;
             lengthMatches = 0;
+            setDescMatches = 0;
         }
         return matchItem;
     }
@@ -323,12 +389,16 @@ public class Manager
         return this.items.getItemByID(id);
     }
 
-    void print()
+    public Set getSetByID(int id)
     {
         for (Set set : sets)
         {
-            System.out.println(set.toString());
+            if (set.getItemNumber() == id)
+            {
+                return set;
+            }
         }
+        return null;
     }
 
 }
