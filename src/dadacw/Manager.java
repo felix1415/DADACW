@@ -90,7 +90,7 @@ public class Manager
                         double price = 0;
                         LinkedList<Integer> tempSetItems = new LinkedList<>(tempSet.getItems());
                         for (int itemNum : tempSetItems)
-                        {
+                        {       
                             Item itemP = this.getItemByID(itemNum);
                             price += itemP.getPrice() * tempSet.getValueFraction();
                         }
