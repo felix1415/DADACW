@@ -129,45 +129,41 @@ public class Manager
 
     public void removeSet(Set rmSet)
     {
-
-        //remove a set etc
-        //Item newItem = findSimilarItem(new Item());
+        //array list for changes
         ArrayList<Integer> remove;
         ArrayList<Integer> add;
         for (int rmItemNumber : rmSet.getItems()) // for all the items in the set to be removed
         {
-            LinkedList<Set> setsCopy = new LinkedList<>();
+            LinkedList<Set> setsCopy = new LinkedList<>(); 
             System.out.println(sets.size());
 
-            for (int i = 0; i < sets.size(); i++) // for all other sets
+            for (Set set : sets) // for all other sets
             {
-                if (sets.get(i).equals(rmSet))
+                if (set.equals(rmSet))
                 {
                     System.out.println("same set");
                     continue;
                 }
                 remove = new ArrayList<>(); // remove item from set
                 add = new ArrayList<>(); // add item to set
-                for (int itemNum : sets.get(i).getItems()) // for all the items in those sets
+                for (int itemNum : set.getItems()) // for all the items in those sets
                 {
                     if (itemNum == rmItemNumber)
                     {
                         remove.add(itemNum);
-                        itemNum = findSimilarItem(
-                                items.getItemByID(rmItemNumber),
-                                sets.get(i)).getItemNumber();
+                        itemNum = findSimilarItem(items.getItemByID(rmItemNumber), set).getItemNumber();
                         add.add(itemNum);
                     }
                 }
                 for (int rm : remove)
                 {
-                    sets.get(i).removeItem(this.getItemByID(rm));
+                    set.removeItem(this.getItemByID(rm));
                 }
                 for (int ad : add)
                 {
-                    sets.get(i).addItem(ad);
+                    set.addItem(ad);
                 }
-                setsCopy.add(sets.get(i));
+                setsCopy.add(set);
             }
 
             sets = setsCopy;
@@ -277,6 +273,10 @@ public class Manager
     public LinkedList<Set> getSets()
     {
         return sets;
+    }
+    
+    public int getNextStockNumber(){
+        return this.stockCounter.getNextStockNumber();
     }
 
     public void addSet(String[] iS)
