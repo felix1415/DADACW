@@ -174,21 +174,6 @@ public class Manager
         }
         sets.remove(rmSet);
         stockCounter.removeNumber(rmSet.getItemNumber());
-//        //for all items in rmSet
-//        for (int rmItem : rmSet.getItems())
-//        {
-//            //for all sets  : set
-//            for (Set set : sets)
-//            {
-//                if(set != rmSet){
-//                    
-//                }
-//            }
-//                //where set != rmSet
-//                    //for all items in this set
-//                        //if rmSet item is the same as set item num then
-//                            //Item newItem = findSimilar
-//        }
 
     }
 
