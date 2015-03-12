@@ -6,6 +6,7 @@
 package dadacw;
 
 import java.util.LinkedList;
+import sort.InsertionSort;
 
 /**
  *
@@ -56,7 +57,7 @@ public class StockCounter
 
     private void sort()
     {
-        this.UID = Util.integerInsertionSort(UID); // use insertion sort for nearly sorted list
+        this.UID = InsertionSort.integerInsertionSort(UID); // use insertion sort for nearly sorted list
     }
 
 }

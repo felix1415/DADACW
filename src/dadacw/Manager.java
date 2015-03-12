@@ -260,6 +260,11 @@ public class Manager
         return sets;
     }
     
+    public void setSets(LinkedList<Set> sets)
+    {
+        this.sets = sets;
+    }
+    
     public int getNextStockNumber(){
         return this.stockCounter.getNextStockNumber();
     }
@@ -283,6 +288,7 @@ public class Manager
             set.updateValueFraction(setItems);
             sets.add(set);
         }
+        
     }
 
     public Object[] getSetsAsObjects()

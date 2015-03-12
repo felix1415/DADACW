@@ -9,6 +9,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
+import sort.InsertionSort;
+import sort.MergeSort;
 
 /**
  *
@@ -18,6 +20,7 @@ public class GUI extends javax.swing.JFrame
 {
 
     private final Manager manager;
+    private int sortState;
 
     /**
      * Creates new form GUI
@@ -26,6 +29,7 @@ public class GUI extends javax.swing.JFrame
     {
         initComponents();
         this.manager = new Manager();
+        this.sortState = 1;
     }
 
     /**
@@ -534,7 +538,7 @@ public class GUI extends javax.swing.JFrame
             int index = jList2.getSelectedIndex(); // save index
             manager.removeSet((Set) jList2.getSelectedValue()); // remove item
             jTextArea1.setText("'" + set.getItemDescription()
-                + "' sold, items removed from all repos\n" + jTextArea1.getText());
+                    + "' sold, items removed from all repos\n" + jTextArea1.getText());
             this.updateGUI();
             jList2.setSelectedIndex(index); // reset index selected
 
@@ -578,7 +582,7 @@ public class GUI extends javax.swing.JFrame
             int index = jList3.getSelectedIndex(); // save index
             manager.removeItem((Item) jList3.getSelectedValue()); // remove item
             jTextArea1.setText("Item: '" + item.getItemDescription()
-                + "' removed from all Bristol Store AND All Items\n" + jTextArea1.getText());
+                    + "' removed from all Bristol Store AND All Items\n" + jTextArea1.getText());
             this.updateGUI();
             jList3.setSelectedIndex(index); // reset index selected
 
@@ -590,6 +594,7 @@ public class GUI extends javax.swing.JFrame
         String desc = jTextField9.getText();
         double price = Double.valueOf(jTextField10.getText());
         manager.addItem(desc, price);
+        manager.setItemsBS(InsertionSort.itemInsertionSort(manager.getItemsBS(), this.sortState));
         jTextField9.setText("");
         jTextField10.setText("");
         jTextArea1.setText("Added new item: '" + desc + "\n" + jTextArea1.getText());
@@ -598,17 +603,32 @@ public class GUI extends javax.swing.JFrame
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton6ActionPerformed
     {//GEN-HEADEREND:event_jButton6ActionPerformed
-        String[] strings = new String[6];
+        String strings[] = new String[6];
+        boolean valid = true;
         strings[0] = (String.valueOf(manager.getNextStockNumber()));
         strings[1] = (jTextField3.getText());
         strings[2] = (jTextField4.getText());
         strings[3] = (jTextField5.getText());
         strings[4] = (jTextField6.getText());
         strings[5] = (jTextField7.getText());
+
+        for (String string : strings)
+        {
+            if (string.equals(""))
+            {
+                valid = false;
+            }
+        }
+        if (valid)
+        {
+            manager.addSet(strings);
+            manager.setSets(InsertionSort.setInsertionSort(manager.getSets(), this.sortState));
+            jTextArea1.setText("New Set is added with item number: " + strings[0] + "\n" + jTextArea1.getText());
+        } else {
+            jTextArea1.setText("ERROR: set not added" + "\n" + jTextArea1.getText());
+        }
+
         
-        manager.addSet(strings);
-        
-        jTextArea1.setText("New set is added with item number: "+strings[0]+"\n" + jTextArea1.getText());
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jList2ValueChanged(javax.swing.event.ListSelectionEvent evt)//GEN-FIRST:event_jList2ValueChanged
@@ -636,6 +656,7 @@ public class GUI extends javax.swing.JFrame
         String desc = jTextField1.getText();
         double price = Double.valueOf(jTextField2.getText());
         manager.addItem(desc, price);
+        manager.setItems(InsertionSort.itemInsertionSort(manager.getItems(), this.sortState));
         jTextField1.setText("");
         jTextField2.setText("");
         jTextArea1.setText("Added new item: '" + desc + "\n" + jTextArea1.getText());
@@ -650,7 +671,7 @@ public class GUI extends javax.swing.JFrame
             int index = jList1.getSelectedIndex(); // save index
             manager.removeItem(item); // remove item
             jTextArea1.setText("Item: '" + item.getItemDescription()
-                + "' removed from All Items\n" + jTextArea1.getText());
+                    + "' removed from All Items\n" + jTextArea1.getText());
             this.updateGUI();
             jList1.setSelectedIndex(index); // reset index selected
 
@@ -659,14 +680,20 @@ public class GUI extends javax.swing.JFrame
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
     {//GEN-HEADEREND:event_jButton3ActionPerformed
-        manager.setItems(MergeSort.sort(manager.getItems(), 1));
+        this.sortState = 1;
+        manager.setItems(MergeSort.sort(manager.getItems(), sortState));
+        manager.setItemsBS(MergeSort.sort(manager.getItemsBS(), sortState));
+        manager.setSets(MergeSort.sortSet(manager.getSets(), sortState));
         jTextArea1.setText("All Items sorted by ID Number\n" + jTextArea1.getText());
         this.updateGUI();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
     {//GEN-HEADEREND:event_jButton2ActionPerformed
-        manager.setItems(MergeSort.sort(manager.getItems(), 2));
+        this.sortState = 2;
+        manager.setItems(MergeSort.sort(manager.getItems(), sortState));
+        manager.setItemsBS(MergeSort.sort(manager.getItemsBS(), sortState));
+        manager.setSets(MergeSort.sortSet(manager.getSets(), sortState));
         jTextArea1.setText("All Items sorted by Price\n" + jTextArea1.getText());
         this.updateGUI();
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -737,14 +764,15 @@ public class GUI extends javax.swing.JFrame
     private void jTextField12KeyPressed(java.awt.event.KeyEvent evt)//GEN-FIRST:event_jTextField12KeyPressed
     {//GEN-HEADEREND:event_jTextField12KeyPressed
         // if enter is pressed in jTextField12 then
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){ 
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER)
+        {
             //execute search
             searchManager();
         }
     }//GEN-LAST:event_jTextField12KeyPressed
 
-    
-    private void searchManager(){
+    private void searchManager()
+    {
         String text = jTextField12.getText();
         //list for adding mathced items to
         ArrayList<Object> list = new ArrayList<>();
@@ -774,6 +802,7 @@ public class GUI extends javax.swing.JFrame
         //display search to user
         jList5.setListData(obj);
     }
+
     /**
      * @param args the command line arguments
      */
