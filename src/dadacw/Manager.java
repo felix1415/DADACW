@@ -109,7 +109,6 @@ public class Manager
         {
             if (item.getItemNumber() == rmItem.getItemNumber())
             {
-                System.out.println(item.getItemNumber() + "|  " + rmItem.getItemNumber() + "|");
                 items.remove(rmItem);
                 break;
             }

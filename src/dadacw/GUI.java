@@ -603,29 +603,57 @@ public class GUI extends javax.swing.JFrame
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton6ActionPerformed
     {//GEN-HEADEREND:event_jButton6ActionPerformed
-        String strings[] = new String[6];
+        ArrayList<String> strings = new ArrayList<>();
         boolean valid = true;
-        strings[0] = (String.valueOf(manager.getNextStockNumber()));
-        strings[1] = (jTextField3.getText());
-        strings[2] = (jTextField4.getText());
-        strings[3] = (jTextField5.getText());
-        strings[4] = (jTextField6.getText());
-        strings[5] = (jTextField7.getText());
-
+        int numberOfItems = 0;
+        strings.add(String.valueOf(manager.getNextStockNumber()));
+        strings.add(jTextField3.getText());// desc
+        strings.add(jTextField4.getText());// price
+        strings.add (jTextField5.getText());
+        strings.add(jTextField6.getText());
+        strings.add(jTextField7.getText());
+        
+        if(!jTextField5.getText().equals("")){
+            numberOfItems++;
+        }
+        if(!jTextField6.getText().equals("")){
+            numberOfItems++;
+        }
+        if(!jTextField7.getText().equals("")){
+            numberOfItems++;
+        }
+        //add valid items to set string
+        ArrayList<String> stringsCopy = new ArrayList<>();
+        //add number of items into right place in list
+        strings = Util.insert(strings, String.valueOf(numberOfItems), 3);
+        //remove redundant strings
         for (String string : strings)
         {
-            if (string.equals(""))
+            if (!string.equals(""))
             {
+                stringsCopy.add(string);
+            }
+        }
+        strings = stringsCopy; // put valid strings back into strings
+        
+        //check that desc and price are okay
+        if(strings.get(1).equals("") || strings.get(2).equals("")){
+            if (Integer.valueOf(strings.get(2)) > 0) {
                 valid = false;
             }
         }
+        //put list to array for manager.addSet()
+        String[] stringArray = strings.toArray(new String[strings.size()]);
         if (valid)
         {
-            manager.addSet(strings);
+            //add set to manager and resort sets, update user
+            manager.addSet(stringArray);
             manager.setSets(InsertionSort.setInsertionSort(manager.getSets(), this.sortState));
-            jTextArea1.setText("New Set is added with item number: " + strings[0] + "\n" + jTextArea1.getText());
+            jTextArea1.setText("New Set '"+ stringArray[1] +
+                        "' added with " + stringArray[3] + 
+                        " items. ID: " + stringArray[0] + "\n" + jTextArea1.getText());
         } else {
-            jTextArea1.setText("ERROR: set not added" + "\n" + jTextArea1.getText());
+            jTextArea1.setText("ERROR: set not added, invalid price, description or item" + "\n" + jTextArea1.getText());
         }
 
         
