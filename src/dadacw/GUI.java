@@ -655,6 +655,7 @@ public class GUI extends javax.swing.JFrame
         } else {
             jTextArea1.setText("ERROR: set not added, invalid price, description or item" + "\n" + jTextArea1.getText());
         }
+        this.updateGUI();
 
         
     }//GEN-LAST:event_jButton6ActionPerformed
