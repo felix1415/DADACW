@@ -587,18 +587,39 @@ public class GUI extends javax.swing.JFrame
             jList3.setSelectedIndex(index); // reset index selected
 
         }
+        jTextArea1.setText("ERROR: item not sold, not item selected" + "\n" + jTextArea1.getText());
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton7ActionPerformed
     {//GEN-HEADEREND:event_jButton7ActionPerformed
-        String desc = jTextField9.getText();
-        double price = Double.valueOf(jTextField10.getText());
-        manager.addItem(desc, price);
-        manager.setItemsBS(InsertionSort.itemInsertionSort(manager.getItemsBS(), this.sortState));
-        jTextField9.setText("");
-        jTextField10.setText("");
-        jTextArea1.setText("Added new item: '" + desc + "\n" + jTextArea1.getText());
-        this.updateGUI();
+        if (jTextField9.getText().equals("") || jTextField10.getText().equals(""))
+        {
+            jTextArea1.setText("ERROR: Couldn't add new item, fields empty\n" + jTextArea1.getText());
+
+        } else
+        {
+            try
+            {
+                if (Double.valueOf(jTextField10.getText()) < 0)
+                {
+                    jTextArea1.setText("ERROR: item not added, price not positive" + "\n" + jTextArea1.getText());
+                    return;
+                }
+            } catch (Exception e)
+            {
+                jTextArea1.setText("ERROR: item not added, price not formatted as positive double" + "\n" + jTextArea1.getText());
+                return;
+            }
+            String desc = jTextField9.getText();
+            double price = Double.valueOf(jTextField10.getText());
+            manager.addItem(desc, price);
+            manager.addItemBS(desc, price);
+            manager.setItemsBS(InsertionSort.itemInsertionSort(manager.getItemsBS(), this.sortState));
+            jTextField9.setText("");
+            jTextField10.setText("");
+            jTextArea1.setText("Added new item: '" + desc + "\n" + jTextArea1.getText());
+            this.updateGUI();
+        }
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton6ActionPerformed
@@ -609,18 +630,38 @@ public class GUI extends javax.swing.JFrame
         strings.add(String.valueOf(manager.getNextStockNumber()));
         strings.add(jTextField3.getText());// desc
         strings.add(jTextField4.getText());// price
-        strings.add (jTextField5.getText());
+        strings.add(jTextField5.getText());
         strings.add(jTextField6.getText());
         strings.add(jTextField7.getText());
-        
-        if(!jTextField5.getText().equals("")){
+
+        //check items are filled in
+        if (jTextField3.getText().equals(""))
+        {
+            jTextArea1.setText("ERROR: set not added, description not present" + "\n" + jTextArea1.getText());
+            return;
+        }
+        if (jTextField4.getText().equals(""))
+        {
+
+            jTextArea1.setText("ERROR: set not added, price not present" + "\n" + jTextArea1.getText());
+            return;
+        }
+        if (!jTextField5.getText().equals(""))
+        {
             numberOfItems++;
         }
-        if(!jTextField6.getText().equals("")){
+        if (!jTextField6.getText().equals(""))
+        {
             numberOfItems++;
         }
-        if(!jTextField7.getText().equals("")){
+        if (!jTextField7.getText().equals(""))
+        {
             numberOfItems++;
+        }
+        if (numberOfItems < 1)
+        {
+            jTextArea1.setText("ERROR: set not added, not enought items" + "\n" + jTextArea1.getText());
+            return;
         }
         //add valid items to set string
         ArrayList<String> stringsCopy = new ArrayList<>();
@@ -634,30 +675,66 @@ public class GUI extends javax.swing.JFrame
                 stringsCopy.add(string);
             }
         }
+
         strings = stringsCopy; // put valid strings back into strings
-        
         //check that desc and price are okay
-        if(strings.get(1).equals("") || strings.get(2).equals("")){
-            if (Integer.valueOf(strings.get(2)) > 0) {
-                valid = false;
-            }
+        if (strings.get(1).equals("") || strings.get(2).equals(""))
+        {
+            jTextArea1.setText("ERROR: set not added, price and/or description invalid" + "\n" + jTextArea1.getText());
+            return;
         }
+        try
+        {
+            if (Double.valueOf(strings.get(2)) < 0)
+            {
+                jTextArea1.setText("ERROR: set not added, price not positive" + "\n" + jTextArea1.getText());
+                return;
+            }
+        } catch (Exception e)
+        {
+            jTextArea1.setText("ERROR: set not added, price not formatted as positive double" + "\n" + jTextArea1.getText());
+            return;
+        }
+
         //put list to array for manager.addSet()
         String[] stringArray = strings.toArray(new String[strings.size()]);
+        int noOfItems = Integer.valueOf(stringArray[3]) + 4;
+        for (int i = 4; i < noOfItems; i++) // for number of item numbers
+        {
+            //check if text value can be made into an int
+            try
+            {
+                Item item;
+                item = manager.getItemByID(Integer.valueOf(stringArray[i]));
+                System.out.println(item.toString());
+                //check if item exsist
+                if (item == null)
+                {
+                    jTextArea1.setText("ERROR: set not added, item does not exsist" + "\n" + jTextArea1.getText());
+                    break;
+                }
+            } catch (NumberFormatException e)
+            {
+                jTextArea1.setText("ERROR: set not added, general error" + "\n" + jTextArea1.getText());
+                return;
+            }
+        }
+
         if (valid)
         {
             //add set to manager and resort sets, update user
             manager.addSet(stringArray);
             manager.setSets(InsertionSort.setInsertionSort(manager.getSets(), this.sortState));
-            jTextArea1.setText("New Set '"+ stringArray[1] +
-                        "' added with " + stringArray[3] + 
-                        " items. ID: " + stringArray[0] + "\n" + jTextArea1.getText());
-        } else {
+            jTextArea1.setText("New Set '" + stringArray[1]
+                    + "' added with " + stringArray[3]
+                    + " items :ID: " + stringArray[0] + "\n" + jTextArea1.getText());
+        } else
+        {
             jTextArea1.setText("ERROR: set not added, invalid price, description or item" + "\n" + jTextArea1.getText());
         }
         this.updateGUI();
 
-        
+
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jList2ValueChanged(javax.swing.event.ListSelectionEvent evt)//GEN-FIRST:event_jList2ValueChanged
@@ -682,14 +759,32 @@ public class GUI extends javax.swing.JFrame
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton5ActionPerformed
     {//GEN-HEADEREND:event_jButton5ActionPerformed
-        String desc = jTextField1.getText();
-        double price = Double.valueOf(jTextField2.getText());
-        manager.addItem(desc, price);
-        manager.setItems(InsertionSort.itemInsertionSort(manager.getItems(), this.sortState));
-        jTextField1.setText("");
-        jTextField2.setText("");
-        jTextArea1.setText("Added new item: '" + desc + "\n" + jTextArea1.getText());
-        this.updateGUI();
+        if (jTextField1.getText().equals("") || jTextField2.getText().equals(""))
+        {
+            jTextArea1.setText("ERROR: Couldn't add new item, fields empty\n" + jTextArea1.getText());
+        } else
+        {
+            try
+            {
+                if (Double.valueOf(jTextField10.getText()) < 0)
+                {
+                    jTextArea1.setText("ERROR: item not added, price not positive" + "\n" + jTextArea1.getText());
+                    return;
+                }
+            } catch (Exception e)
+            {
+                jTextArea1.setText("ERROR: item not added, price not formatted as positive double" + "\n" + jTextArea1.getText());
+                return;
+            }
+            String desc = jTextField1.getText();
+            double price = Double.valueOf(jTextField2.getText());
+            manager.addItem(desc, price);
+            manager.setItems(InsertionSort.itemInsertionSort(manager.getItems(), this.sortState));
+            jTextField1.setText("");
+            jTextField2.setText("");
+            jTextArea1.setText("Added new item: '" + desc + "\n" + jTextArea1.getText());
+            this.updateGUI();
+        }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton4ActionPerformed
@@ -703,8 +798,8 @@ public class GUI extends javax.swing.JFrame
                     + "' removed from All Items\n" + jTextArea1.getText());
             this.updateGUI();
             jList1.setSelectedIndex(index); // reset index selected
-
         }
+        jTextArea1.setText("ERROR: item not sold, not item selected" + "\n" + jTextArea1.getText());
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
@@ -802,7 +897,12 @@ public class GUI extends javax.swing.JFrame
 
     private void searchManager()
     {
+        
         String text = jTextField12.getText();
+        if(text.equals("")){
+            jTextArea1.setText("ERROR: no search criteria" + "\n" + jTextArea1.getText());
+            return;
+        }
         //list for adding mathced items to
         ArrayList<Object> list = new ArrayList<>();
         for (Item item : manager.getItems())
@@ -826,8 +926,13 @@ public class GUI extends javax.swing.JFrame
             {
             }
         }
+        if(list.size() == 0){
+            Item item = new Item(0, "No results found", 0.0);
+            list.add(item);
+        }
         //put list to object arry
         Object[] obj = list.toArray();
+        
         //display search to user
         jList5.setListData(obj);
     }

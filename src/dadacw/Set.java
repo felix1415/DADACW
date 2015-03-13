@@ -68,7 +68,7 @@ public class Set extends Item
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(super.toString() + "   vF:" +this.valueFraction);
+        sb.append(super.toString());
         for (int item : items)
         {
             sb.append("\n   ").append(item);

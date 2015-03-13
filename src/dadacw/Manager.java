@@ -133,14 +133,12 @@ public class Manager
         ArrayList<Integer> add;
         for (int rmItemNumber : rmSet.getItems()) // for all the items in the set to be removed
         {
-            LinkedList<Set> setsCopy = new LinkedList<>(); 
-            System.out.println(sets.size());
+            LinkedList<Set> setsCopy = new LinkedList<>();
 
             for (Set set : sets) // for all other sets
             {
                 if (set.equals(rmSet))
                 {
-                    System.out.println("same set");
                     continue;
                 }
                 remove = new ArrayList<>(); // remove item from set
@@ -178,7 +176,7 @@ public class Manager
 
     private Item findSimilarItem(Item rmItem, Set set)
     {
-        //System.out.println(rmItem.toString());
+        
         for (Item item : items.getItems()) // for all items
         {
             //if the same description
@@ -207,8 +205,11 @@ public class Manager
             //if not same item
             if (!containedInSet(item.getItemNumber(), set))
             {
+                //split item string
                 String[] itemString = item.getItemDescription().split(" ");
+                //get length difference of desc's
                 lengthMatches = Math.abs(itemString.length - rmItemString.length);
+                //split set string
                 String[] setString = set.getItemDescription().split(" ");
                 for (String rmString : rmItemString) // for each word in the item
                 {
@@ -218,8 +219,10 @@ public class Manager
                         {
                             contentMatches++;
                         }
+                        //for all strings in set desc
                         for (String setStringSplit : setString)
                         {
+                            //see if item string matches set string
                             if (string.equals(setStringSplit))
                             {
                                 setDescMatches++;
@@ -229,21 +232,23 @@ public class Manager
                     }
                 }
             }
+            // if item matches set desc and remove item desc then
             if (contentMatches > highestMatches && lengthMatches < 2 && setDescMatches >= 6)
             { // if better than previous
-                System.out.println(item.getItemDescription() + "  conMat:" + contentMatches + "  lenMat:" + lengthMatches + " sDM:" + setDescMatches);
                 matchItem = item; //change 
                 highestMatches = contentMatches;
             }
+            //reset
             contentMatches = 0;
             lengthMatches = 0;
             setDescMatches = 0;
         }
-        return matchItem;
+        return matchItem; // best matched item for replacing an item
     }
 
     private boolean containedInSet(int itemNumber, Set set)
     {
+        //for all items check if item is contained in a set
         for (int item : set.getItems())
         {
             if (item == itemNumber)
@@ -279,6 +284,7 @@ public class Manager
             {
                 set.addItem(Integer.valueOf(iS[i])); // add item nubmers to set
             }
+            //calculate sets value fraction
             LinkedList<Item> setItems = new LinkedList<>();
             for (int item : set.getItems())
             {
