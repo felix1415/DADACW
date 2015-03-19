@@ -324,7 +324,9 @@ public class Manager
 
     public void addItemBS(String desc, double price)
     {
-        this.bristolStore.addItem(desc, price, stockCounter.getNextStockNumber());
+        int number = stockCounter.getNextStockNumber();
+        this.bristolStore.addItem(desc, price, number);
+        this.items.addItem(desc, price, number);
     }
 
     public LinkedList<Item> getItems()

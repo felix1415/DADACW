@@ -19,7 +19,7 @@ public class Util
 
     public static double round(double value, int places)
     {
-        places = Math.abs(places);
+        places = Math.abs(places); // make positive
         double factor = (long) Math.pow(10, places);
         value = value * factor;
         double tmp = Math.round(value);

@@ -301,14 +301,14 @@ public class GUI extends javax.swing.JFrame
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel2)
                                 .addGap(209, 209, 209)
                                 .addComponent(jLabel3))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -324,8 +324,9 @@ public class GUI extends javax.swing.JFrame
                                                 .addComponent(jLabel7)
                                                 .addGap(0, 0, Short.MAX_VALUE))
                                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(9, 9, 9)
                                                 .addComponent(jTextField12)
-                                                .addGap(12, 12, 12)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(jButton13)))
                                         .addGap(94, 94, 94))))
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -542,6 +543,8 @@ public class GUI extends javax.swing.JFrame
             this.updateGUI();
             jList2.setSelectedIndex(index); // reset index selected
 
+        } else {
+            jTextArea1.setText("ERROR: set not sold, no set selected" + "\n" + jTextArea1.getText());
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
@@ -586,8 +589,9 @@ public class GUI extends javax.swing.JFrame
             this.updateGUI();
             jList3.setSelectedIndex(index); // reset index selected
 
+        } else {
+        jTextArea1.setText("ERROR: item not sold, no item selected" + "\n" + jTextArea1.getText());
         }
-        jTextArea1.setText("ERROR: item not sold, not item selected" + "\n" + jTextArea1.getText());
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton7ActionPerformed
@@ -612,7 +616,6 @@ public class GUI extends javax.swing.JFrame
             }
             String desc = jTextField9.getText();
             double price = Double.valueOf(jTextField10.getText());
-            manager.addItem(desc, price);
             manager.addItemBS(desc, price);
             manager.setItemsBS(InsertionSort.itemInsertionSort(manager.getItemsBS(), this.sortState));
             jTextField9.setText("");
@@ -706,7 +709,6 @@ public class GUI extends javax.swing.JFrame
             {
                 Item item;
                 item = manager.getItemByID(Integer.valueOf(stringArray[i]));
-                System.out.println(item.toString());
                 //check if item exsist
                 if (item == null)
                 {
@@ -766,7 +768,7 @@ public class GUI extends javax.swing.JFrame
         {
             try
             {
-                if (Double.valueOf(jTextField10.getText()) < 0)
+                if (Double.valueOf(jTextField2.getText()) < 0)
                 {
                     jTextArea1.setText("ERROR: item not added, price not positive" + "\n" + jTextArea1.getText());
                     return;
@@ -798,8 +800,9 @@ public class GUI extends javax.swing.JFrame
                     + "' removed from All Items\n" + jTextArea1.getText());
             this.updateGUI();
             jList1.setSelectedIndex(index); // reset index selected
+        } else {
+        jTextArea1.setText("ERROR: item not sold, no item selected" + "\n" + jTextArea1.getText());
         }
-        jTextArea1.setText("ERROR: item not sold, not item selected" + "\n" + jTextArea1.getText());
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
@@ -907,10 +910,10 @@ public class GUI extends javax.swing.JFrame
         ArrayList<Object> list = new ArrayList<>();
         for (Item item : manager.getItems())
         {
-            //if search text is in item desc, put all to lowercase
+            //put all to lowercase, if search text is in item desc
             if (item.getItemDescription().toLowerCase().contains(text.toLowerCase()))
             {
-                //add to list and continue to next item
+                //add item to list and continue to next item
                 list.add(item);
                 continue;
             }
@@ -926,7 +929,9 @@ public class GUI extends javax.swing.JFrame
             {
             }
         }
-        if(list.size() == 0){
+        //if no matches
+        if(list.isEmpty()){
+            //display no results found
             Item item = new Item(0, "No results found", 0.0);
             list.add(item);
         }
