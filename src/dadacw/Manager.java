@@ -46,13 +46,7 @@ public class Manager
                 //add item to set
                 set.addItem(itemID);
                 //update set price
-                double price = 0;
-                for (int itemNum : set.getItems())
-                {
-                    Item itemP = this.getItemByID(itemNum);
-                    price += itemP.getPrice() * set.getValueFraction();
-                }
-                set.setPrice(price);
+                updateSetPrices();
                 return true;
             }
         }
@@ -62,68 +56,69 @@ public class Manager
     public void removeItem(Item rmItem)
     {
         LinkedList<Set> setsCopy = new LinkedList<>(sets);
+        //for all sets
         for (Set set : sets)
-        { 
+        {
             Set tempSet = set;
             LinkedList<Integer> setItems = new LinkedList<>(set.getItems());
+            //for all items in the set
             for (int item : setItems)
             {
+                //if the item is equal to the remove item then
                 if (item == rmItem.getItemNumber())
                 {
+                    //find a similar item method
                     Item newItem = this.findSimilarItem(rmItem, set);
+                    //if new item is not null then
                     if (newItem != null)
                     {
-                        tempSet.removeItem(this.getItemByID(item)); // remove old item
-                        tempSet.addItem(newItem.getItemNumber()); // add new item
-                        double price = 0;
-                        LinkedList<Integer> tempSetItems = new LinkedList<>(tempSet.getItems());
-                        for (int itemNum : tempSetItems)
-                        {
-                            Item itemP = this.getItemByID(itemNum);
-                            price += itemP.getPrice() * tempSet.getValueFraction();
-                        }
-                        tempSet.setPrice(price);
+                        //remove item from set
+                        tempSet.removeItem(this.getItemByID(item));
+                        //add new item
+                        tempSet.addItem(newItem.getItemNumber());
                         break;
                     } else
                     {
+                        //remove item from set
                         tempSet.removeItem(rmItem);
-                        double price = 0;
-                        LinkedList<Integer> tempSetItems = new LinkedList<>(tempSet.getItems());
-                        for (int itemNum : tempSetItems)
-                        {       
-                            Item itemP = this.getItemByID(itemNum);
-                            price += itemP.getPrice() * tempSet.getValueFraction();
-                        }
-                        tempSet.setPrice(price);
                         break;
                     }
                 }
             }
+            //if set now empty
             if (tempSet.getItems().size() == 0)
             {
+                //remove set
                 setsCopy.remove(set);
             }
         }
+        //copy set back to original
         sets = setsCopy;
-        for (Item item : items.getItems())
-        {
-            if (item.getItemNumber() == rmItem.getItemNumber())
-            {
-                items.remove(rmItem);
-                break;
-            }
-        }
-
-        for (Item item : bristolStore.getItems())
-        {
-            if (item.getItemNumber() == rmItem.getItemNumber())
-            {
-                bristolStore.remove(rmItem);
-                break;
-            }
-        }
-
+        //update set prices
+        updateSetPrices();
+        //remove from all repos and stock counter
+        this.items.remove(rmItem);
+        this.bristolStore.remove(rmItem);
         stockCounter.removeNumber(rmItem.getItemNumber());
+    }
+
+    public void updateSetPrices()
+    {
+        //for all sets
+        for (Set set : sets)
+        {
+            double price = 0;
+            //for all items in this set
+            for (int itemNum : set.getItems())
+            {
+                //get the item by id
+                Item item = this.getItemByID(itemNum);
+                //price = price + (item price * set value fracetion)
+                price += item.getPrice() * set.getValueFraction();
+            }
+            //set price
+            set.setPrice(price);
+        }
     }
 
     public void removeSet(Set rmSet)
@@ -131,52 +126,65 @@ public class Manager
         //array list for changes
         ArrayList<Integer> remove;
         ArrayList<Integer> add;
-        for (int rmItemNumber : rmSet.getItems()) // for all the items in the set to be removed
+        // for all the items in the set to be removed
+        for (int rmItemNumber : rmSet.getItems())
         {
             LinkedList<Set> setsCopy = new LinkedList<>();
-
-            for (Set set : sets) // for all other sets
+            // for all other sets
+            for (Set set : sets)
             {
+                //if set same as remove set then
                 if (set.equals(rmSet))
                 {
+                    //next set
                     continue;
                 }
                 remove = new ArrayList<>(); // remove item from set
                 add = new ArrayList<>(); // add item to set
-                for (int itemNum : set.getItems()) // for all the items in those sets
+                // for all the items in those sets
+                for (int itemNum : set.getItems())
                 {
+                    //if the item to be removed then
                     if (itemNum == rmItemNumber)
                     {
+                        //add item to remove array
                         remove.add(itemNum);
+                        //find similar item
                         itemNum = findSimilarItem(items.getItemByID(rmItemNumber), set).getItemNumber();
+                        //add item to add array
                         add.add(itemNum);
                     }
                 }
+                //remove items from set
                 for (int rm : remove)
                 {
                     set.removeItem(this.getItemByID(rm));
                 }
+                //add new items to set
                 for (int ad : add)
                 {
                     set.addItem(ad);
                 }
+                //copy set back to original set
                 setsCopy.add(set);
             }
-
+            updateSetPrices();
             sets = setsCopy;
+            //remove item number from all repos
             items.remove(rmItemNumber);
             bristolStore.remove(rmItemNumber);
             stockCounter.removeNumber(rmItemNumber);
-            System.out.println(rmItemNumber + "| was removed  ");
         }
+        //remove set from sets
         sets.remove(rmSet);
+        //remove id number from stock counter
         stockCounter.removeNumber(rmSet.getItemNumber());
 
     }
 
     private Item findSimilarItem(Item rmItem, Set set)
     {
-        
+
         for (Item item : items.getItems()) // for all items
         {
             //if the same description
@@ -200,7 +208,7 @@ public class Manager
         int highestMatches = 0;
         int setDescMatches = 0;
         Item matchItem = null;
-        for (Item item : items.getItems()) // for all item
+        for (Item item : items.getItems()) // for all items
         {
             //if not same item
             if (!containedInSet(item.getItemNumber(), set))
@@ -217,6 +225,7 @@ public class Manager
                     {
                         if (rmString.equals(string)) // see if string matches
                         {
+                            //increment contentMatches
                             contentMatches++;
                         }
                         //for all strings in set desc
@@ -225,6 +234,7 @@ public class Manager
                             //see if item string matches set string
                             if (string.equals(setStringSplit))
                             {
+                                //increment setDescMatches
                                 setDescMatches++;
                             }
                         }
@@ -263,13 +273,14 @@ public class Manager
     {
         return sets;
     }
-    
+
     public void setSets(LinkedList<Set> sets)
     {
         this.sets = sets;
     }
-    
-    public int getNextStockNumber(){
+
+    public int getNextStockNumber()
+    {
         return this.stockCounter.getNextStockNumber();
     }
 
@@ -293,7 +304,7 @@ public class Manager
             set.updateValueFraction(setItems);
             sets.add(set);
         }
-        
+
     }
 
     public Object[] getSetsAsObjects()
