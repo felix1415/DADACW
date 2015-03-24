@@ -6,6 +6,7 @@
 package dadacw;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
 /**
@@ -58,7 +59,7 @@ public class Manager
     public String removeItem(Item rmItem)
     {
         LinkedList<Set> setsCopy = new LinkedList<>(sets);
-        ArrayList<String> affectedSets = new ArrayList<>();
+        LinkedHashSet<String> affectedSets = new LinkedHashSet<>();
         //for all sets
         for (Set set : sets)
         {
@@ -71,7 +72,7 @@ public class Manager
                 if (item == rmItem.getItemNumber())
                 {
                     //add to affected sets list
-                    affectedSets.add(set.getItemDescription());
+                    affectedSets.add(String.valueOf(set.getItemNumber()));
                     //find a similar item method
                     Item newItem = this.findSimilarItem(rmItem, set);
                     //if new item is not null then
@@ -106,12 +107,8 @@ public class Manager
         this.bristolStore.remove(rmItem);
         this.londonStore.remove(rmItem);
         stockCounter.removeNumber(rmItem.getItemNumber());
-        StringBuilder sb = new StringBuilder();
-        for (String string : affectedSets)
-        {
-            sb.append(string).append(", ");
-        }
-        return sb.toString();
+        //return affected sets
+        return Util.linkedHashSetToString(affectedSets);
     }
 
     public void updateSetPrices()
@@ -133,11 +130,24 @@ public class Manager
         }
     }
 
-    public void removeSet(Set rmSet)
+    public void breakSet(Set rmSet)
+    {
+        for (Set set : sets)
+        {
+            if (rmSet.getItemNumber() == set.getItemNumber())
+            {
+                sets.remove(set);
+                break;
+            }
+        }
+    }
+
+    public String removeSet(Set rmSet)
     {
         //array list for changes
         ArrayList<Integer> remove;
         ArrayList<Integer> add;
+        LinkedHashSet<String> affectedSets = new LinkedHashSet<>();
         // for all the items in the set to be removed
         for (int rmItemNumber : rmSet.getItems())
         {
@@ -159,6 +169,7 @@ public class Manager
                     //if the item to be removed then
                     if (itemNum == rmItemNumber)
                     {
+                        affectedSets.add(String.valueOf(set.getItemNumber()));
                         //add item to remove array
                         remove.add(itemNum);
                         //find similar item
@@ -196,7 +207,7 @@ public class Manager
         sets.remove(rmSet);
         //remove id number from stock counter
         stockCounter.removeNumber(rmSet.getItemNumber());
-
+        return Util.linkedHashSetToString(affectedSets);
     }
 
     private Item findSimilarItem(Item rmItem, Set set)
@@ -443,8 +454,6 @@ public class Manager
         if (this.stockCounter.checkStockNumber(Integer.valueOf(iS[0])))
         {
             items.addItem(iS);
-        } else {
-            System.out.println("stock number invalid");
         }
     }
 
