@@ -70,9 +70,10 @@ public class MergeSort
     {
         if (leftIndex < rightIndex)
         {
+            //split list
             int middleIndex = (leftIndex + rightIndex) / 2;
-            mergeSort(items, leftIndex, middleIndex, criteria);
-            mergeSort(items, middleIndex + 1, rightIndex, criteria);
+            mergeSort(items, leftIndex, middleIndex, criteria); // sort left list
+            mergeSort(items, middleIndex + 1, rightIndex, criteria); // sort right list
             merge(items, leftIndex, middleIndex, rightIndex, criteria);
         }
         return items;

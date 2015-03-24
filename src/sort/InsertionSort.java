@@ -40,15 +40,19 @@ public class InsertionSort
         Item key;                // the item to be inserted
         int i = 0;
 
-        for (j = 1; j < item.size(); j++)    // Start with 1 (not 0)
+        //for every item
+        for (j = 1; j < item.size(); j++)    
         {
             key = item.get(j);
+            //if sort by ID number
             if (criteria == 1)
             {
+                //
                 for (i = j - 1; (i >= 0) && (item.get(i).getItemNumber() > key.getItemNumber()); i--)   // Smaller values are moving up
                 {
                     item.set(i + 1, item.get(i));
                 }
+            //else if sort by price
             } else if (criteria == 2)
             {
                 for (i = j - 1; (i >= 0) && (item.get(i).getPrice() > key.getPrice()); i--)   // Smaller values are moving up

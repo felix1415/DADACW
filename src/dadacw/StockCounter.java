@@ -30,28 +30,42 @@ public class StockCounter
         sort();
         return UID.getFirst();
     }
-    
-    public void removeNumber(int number){
+
+    public void removeNumber(int number)
+    {
         UID.removeFirstOccurrence(number);
     }
 
-    public void checkStockNumber(int number)
+    public boolean checkStockNumber(int number)
     {
-        if (number > UID.getFirst())
+        for (int num : UID)
         {
-            UID.add(number);
-            sort();
-            return;
-        } else
-        {
-            for (int num : UID)
+            if (num == number)
             {
-                if (num == number)
-                {
-                    System.out.println("ERROR: STOCK NUMBER ALREADY EXSISTS");
-                }
+                return false;
             }
         }
+        UID.add(number);
+        sort();
+        return true;
+//        if (number > UID.getFirst())
+//        {
+//            UID.add(number);
+//            sort();
+//            return true;
+//        } else
+//        {
+//            for (int num : UID)
+//            {
+//                if (num == number)
+//                {
+//                    return false;
+//                }
+//            }
+//            UID.add(number);
+//            sort();
+//            return true;
+//        }
 
     }
 

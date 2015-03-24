@@ -73,10 +73,6 @@ public class Repository
         {
             if(item.getItemNumber() == itemNumber){
                 items.remove(item);
-                if (items.contains(item))
-                {
-                    System.out.println("WHY NO WORK");
-                }
                 break;
             }
         }

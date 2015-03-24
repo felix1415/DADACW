@@ -40,12 +40,15 @@ public class Util
             if(location == currentElement){
                 newStrings.add(value);
             }
-            //add exsisting string to list, increment counter
+            //add next exsisting string to list, increment counter
             newStrings.add(string);
             currentElement++;
         }
+        //return array list
         return newStrings;
     }
+    
+    //the two sorts below are not used
 
     public static LinkedList<Item> sortByItemNumber(LinkedList<Item> items)
     {

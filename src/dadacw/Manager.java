@@ -17,6 +17,7 @@ public class Manager
 
     private final Repository bristolStore;
     private final Repository items;
+    private final Repository londonStore;
     private final StockCounter stockCounter;
     private LinkedList<Set> sets;
 
@@ -26,6 +27,7 @@ public class Manager
         this.bristolStore = new Repository();
         this.sets = new LinkedList<>();
         this.stockCounter = new StockCounter();
+        this.londonStore = new Repository();
     }
 
     public int getSetListSize()
@@ -53,9 +55,10 @@ public class Manager
         return false;
     }
 
-    public void removeItem(Item rmItem)
+    public String removeItem(Item rmItem)
     {
         LinkedList<Set> setsCopy = new LinkedList<>(sets);
+        ArrayList<String> affectedSets = new ArrayList<>();
         //for all sets
         for (Set set : sets)
         {
@@ -67,6 +70,8 @@ public class Manager
                 //if the item is equal to the remove item then
                 if (item == rmItem.getItemNumber())
                 {
+                    //add to affected sets list
+                    affectedSets.add(set.getItemDescription());
                     //find a similar item method
                     Item newItem = this.findSimilarItem(rmItem, set);
                     //if new item is not null then
@@ -99,7 +104,14 @@ public class Manager
         //remove from all repos and stock counter
         this.items.remove(rmItem);
         this.bristolStore.remove(rmItem);
+        this.londonStore.remove(rmItem);
         stockCounter.removeNumber(rmItem.getItemNumber());
+        StringBuilder sb = new StringBuilder();
+        for (String string : affectedSets)
+        {
+            sb.append(string).append(", ");
+        }
+        return sb.toString();
     }
 
     public void updateSetPrices()
@@ -150,9 +162,13 @@ public class Manager
                         //add item to remove array
                         remove.add(itemNum);
                         //find similar item
-                        itemNum = findSimilarItem(items.getItemByID(rmItemNumber), set).getItemNumber();
-                        //add item to add array
-                        add.add(itemNum);
+                        Item newItemNum = findSimilarItem(items.getItemByID(rmItemNumber), set);
+                        //if not a null item then
+                        if (newItemNum != null)
+                        {
+                            //add item to add array
+                            add.add(newItemNum.getItemNumber());
+                        }
                     }
                 }
                 //remove items from set
@@ -173,6 +189,7 @@ public class Manager
             //remove item number from all repos
             items.remove(rmItemNumber);
             bristolStore.remove(rmItemNumber);
+            londonStore.remove(rmItemNumber);
             stockCounter.removeNumber(rmItemNumber);
         }
         //remove set from sets
@@ -340,6 +357,13 @@ public class Manager
         this.items.addItem(desc, price, number);
     }
 
+    public void addItemLD(String desc, double price)
+    {
+        int number = stockCounter.getNextStockNumber();
+        this.londonStore.addItem(desc, price, number);
+        this.items.addItem(desc, price, number);
+    }
+
     public LinkedList<Item> getItems()
     {
         return this.items.getItems();
@@ -348,6 +372,11 @@ public class Manager
     public LinkedList<Item> getItemsBS()
     {
         return this.bristolStore.getItems();
+    }
+
+    public LinkedList<Item> getItemsLD()
+    {
+        return this.londonStore.getItems();
     }
 
     public void setItems(LinkedList<Item> items)
@@ -360,6 +389,11 @@ public class Manager
         this.bristolStore.setItems(items);
     }
 
+    public void setItemsLD(LinkedList<Item> items)
+    {
+        this.londonStore.setItems(items);
+    }
+
     public Object[] getItemsAsObjects()
     {
         return this.items.getItemsAsObjects();
@@ -368,6 +402,11 @@ public class Manager
     public Object[] getItemsAsObjectsBS()
     {
         return this.bristolStore.getItemsAsObjects();
+    }
+
+    public Object[] getItemsAsObjectsLD()
+    {
+        return this.londonStore.getItemsAsObjects();
     }
 
     public int getItemListSize()
@@ -380,17 +419,33 @@ public class Manager
         return this.bristolStore.getItemListSize();
     }
 
+    public int getItemListSizeLD()
+    {
+        return this.londonStore.getItemListSize();
+    }
+
     public void addItemBS(String[] iS)
     {
         bristolStore.addItem(iS);
-        items.addItem(iS);
+        this.addItem(iS);
+        this.stockCounter.checkStockNumber(Integer.valueOf(iS[0]));
+    }
+
+    public void addItemLD(String[] iS)
+    {
+        londonStore.addItem(iS);
+        this.addItem(iS);
         this.stockCounter.checkStockNumber(Integer.valueOf(iS[0]));
     }
 
     public void addItem(String[] iS)
     {
-        items.addItem(iS);
-        this.stockCounter.checkStockNumber(Integer.valueOf(iS[0]));
+        if (this.stockCounter.checkStockNumber(Integer.valueOf(iS[0])))
+        {
+            items.addItem(iS);
+        } else {
+            System.out.println("stock number invalid");
+        }
     }
 
     public Item getItemByID(int id)
