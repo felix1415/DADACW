@@ -704,7 +704,7 @@ public class GUI extends javax.swing.JFrame
                 affected = " - Affected Sets: \n    " + affected;
             } 
             jTextArea1.setText("Item: '" + item.getItemNumber()
-                    + "' removed from all Bristol Store AND All Items" + affected + "\n" + jTextArea1.getText());
+                    + "' removed from all repos" + affected + "\n" + jTextArea1.getText());
             this.updateGUI();
             jList3.setSelectedIndex(index); // reset index selected
 
@@ -919,7 +919,7 @@ public class GUI extends javax.swing.JFrame
                 affected = " - Affected Sets: \n    " + affected;
             } 
             jTextArea1.setText("Item: '" + item.getItemNumber()
-                    + "' removed from all Bristol Store AND All Items" + affected + "\n" + jTextArea1.getText());
+                    + "' removed from all repos" + affected + "\n" + jTextArea1.getText());
             this.updateGUI();
             jList1.setSelectedIndex(index); // reset index selected
         } else {
@@ -932,6 +932,7 @@ public class GUI extends javax.swing.JFrame
         this.sortState = 1;
         manager.setItems(MergeSort.sort(manager.getItems(), sortState));
         manager.setItemsBS(MergeSort.sort(manager.getItemsBS(), sortState));
+        manager.setItemsLD(MergeSort.sort(manager.getItemsLD(), sortState));
         manager.setSets(MergeSort.sortSet(manager.getSets(), sortState));
         jTextArea1.setText("All Items sorted by ID Number\n" + jTextArea1.getText());
         this.updateGUI();
@@ -942,6 +943,7 @@ public class GUI extends javax.swing.JFrame
         this.sortState = 2;
         manager.setItems(MergeSort.sort(manager.getItems(), sortState));
         manager.setItemsBS(MergeSort.sort(manager.getItemsBS(), sortState));
+        manager.setItemsLD(MergeSort.sort(manager.getItemsLD(), sortState));
         manager.setSets(MergeSort.sortSet(manager.getSets(), sortState));
         jTextArea1.setText("All Items sorted by Price\n" + jTextArea1.getText());
         this.updateGUI();
@@ -1078,7 +1080,7 @@ public class GUI extends javax.swing.JFrame
                 affected = " - Affected Sets: \n    " + affected;
             } 
             jTextArea1.setText("Item: '" + item.getItemNumber()
-                    + "' removed from all Bristol Store AND All Items" + affected + "\n" + jTextArea1.getText());
+                    + "' removed from all repos" + affected + "\n" + jTextArea1.getText());
             this.updateGUI();
             jList6.setSelectedIndex(index); // reset index selected
 

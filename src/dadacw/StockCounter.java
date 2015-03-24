@@ -48,24 +48,6 @@ public class StockCounter
         UID.add(number);
         sort();
         return true;
-//        if (number > UID.getFirst())
-//        {
-//            UID.add(number);
-//            sort();
-//            return true;
-//        } else
-//        {
-//            for (int num : UID)
-//            {
-//                if (num == number)
-//                {
-//                    return false;
-//                }
-//            }
-//            UID.add(number);
-//            sort();
-//            return true;
-//        }
 
     }
 

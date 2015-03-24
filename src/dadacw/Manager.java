@@ -82,11 +82,13 @@ public class Manager
                         tempSet.removeItem(this.getItemByID(item));
                         //add new item
                         tempSet.addItem(newItem.getItemNumber());
+                        affectedSets.add("Replaced with " + newItem.getItemNumber() + "||");
                         break;
                     } else
                     {
                         //remove item from set
                         tempSet.removeItem(rmItem);
+                        affectedSets.add("Item removed-Price adjusted");
                         break;
                     }
                 }
@@ -179,6 +181,9 @@ public class Manager
                         {
                             //add item to add array
                             add.add(newItemNum.getItemNumber());
+                            affectedSets.add("Replaced with " + newItemNum.getItemNumber() + "||");
+                        } else {
+                            affectedSets.add("Item removed-Price adjusted");
                         }
                     }
                 }

@@ -33,7 +33,7 @@ public class Util
         StringBuilder sb = new StringBuilder();
         for (String string : strings)
         {
-            sb.append(string).append(", ");
+            sb.append(string).append("; ");
         }
 
         String string = "";
