@@ -8,6 +8,8 @@ package dadacw;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
 /**
@@ -25,11 +27,34 @@ public class Util
         double tmp = Math.round(value);
         return (double) tmp / factor;
     }
-    
-    public static ArrayList<String> insert(ArrayList<String> strings, String value, int location){
+
+    public static String linkedHashSetToString(LinkedHashSet<String> strings)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (String string : strings)
+        {
+            sb.append(string).append(", ");
+        }
+
+        String string = "";
+        if (sb.length() > 2)
+        { //remove last ", " from string
+            string = removeLastTwoChar(sb.toString());
+        }
+        return string;
+    }
+
+    private static String removeLastTwoChar(String str)
+    {
+        return str.substring(0, str.length() - 2);
+    }
+
+    public static ArrayList<String> insert(ArrayList<String> strings, String value, int location)
+    {
         int currentElement = 0;
         //if invalid location return null
-        if(location > strings.size()){
+        if (location > strings.size())
+        {
             return null;
         }
         ArrayList<String> newStrings = new ArrayList<>();
@@ -37,7 +62,8 @@ public class Util
         for (String string : strings)
         {
             //if at desired insert location then insert element
-            if(location == currentElement){
+            if (location == currentElement)
+            {
                 newStrings.add(value);
             }
             //add next exsisting string to list, increment counter
@@ -47,9 +73,8 @@ public class Util
         //return array list
         return newStrings;
     }
-    
-    //the two sorts below are not used
 
+    //the two sorts below are not used
     public static LinkedList<Item> sortByItemNumber(LinkedList<Item> items)
     {
         //sort items by defined comparator
